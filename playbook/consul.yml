@@ -1,0 +1,13 @@
+---
+- hosts: consul-master
+  become: true
+  roles:
+    - role: consul
+      consul_version: 1.1.0
+      consul_config: 
+        bind_addr: "{{ IPADDRESS }}"
+        server: true
+        ui: true
+        bootstrap_expect: 1
+     
+

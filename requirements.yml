@@ -1,0 +1,5 @@
+- src: https://github.com/gauravyadav01/ansible-consul
+  name: consul
+
+- src: https://github.com/gauravyadav01/ansible-nomad
+  name: nomad

@@ -1,0 +1,6 @@
+[consul-master]
+consul1.example.com
+
+[nomad-master]
+consul1.example.com
+

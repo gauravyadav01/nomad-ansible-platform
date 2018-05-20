@@ -1,0 +1,14 @@
+---
+- hosts: fabio
+  become: true
+  tasks:
+    - name: Ensure Ntp is installed
+      yum: name=ntp state=present
+
+    - name: Run common role
+      include_role:
+        name: common
+
+    - name: Run consul role
+      include_role:
+        name: gaurav.consul

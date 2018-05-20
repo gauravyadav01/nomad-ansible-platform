@@ -1,0 +1,4 @@
+*.retry
+.vagrant
+.git
+playbook/roles

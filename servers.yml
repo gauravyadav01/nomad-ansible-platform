@@ -1,0 +1,10 @@
+---
+  :domain: example.com
+  :network: 192.168.10.0/24
+  :box: bento/centos-7.4
+  :vms:
+    - :name: consul1
+      :ip: 192.168.10.2
+      :role:
+        - consul-master
+        - nomad-master
