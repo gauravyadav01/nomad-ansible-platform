@@ -4,6 +4,10 @@
   roles:
     - role: nomad
       nomad_config:
+        bind_addr: "{{ IPADDRESS }}"
+        advertise:
+          rpc: "{{ IPADDRESS }}"
+          raft: "{{ IPADDRESS }}"
         server:
           enabled: true
           bootstrap_expect: 1

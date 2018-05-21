@@ -14,6 +14,11 @@ facts[:network] = '192.168.2.0/24'
 facts[:memory] = 512
 facts[:cpu] = 1
 
+required_plugins = %w( landrush vagrant-cachier )
+required_plugins.each do |plugin|
+  system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
+end
+
 
 # Specify minimum Vagrant version and Vagrant API version
 Vagrant.require_version ">= 1.6.0"
