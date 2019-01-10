@@ -34,7 +34,7 @@ begin
 		vms = facts[:vms]
 	end
 	vms.each do |v|
-		v.merge!(facts.except(:vms))
+		v.merge!(facts.except(:vms)){ |key, v1, v2| v1 }
 	end
 rescue
   puts "Create a servers.yaml file in current direcory"
