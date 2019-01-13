@@ -17,7 +17,7 @@ facts[:linux] = 'bento/centos-7.5'
 facts[:win] = 'jacqinthebox/windowsserver2016'
 
 
-required_plugins = %w( vagrant-cachier )
+required_plugins = %w( vagrant-cachier vagrant-dns )
 required_plugins.each do |plugin|
   system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
 end
@@ -33,7 +33,7 @@ begin
     vms = facts[:vms]
   end
   vms.each do |v|
-    v.merge!(facts.except(:vms)){ |key, v1, v2| v1 }
+    v.merge!(facts.tap{ |x| x.delete(:vms)}){ |key, v1, v2| v1 }
   end
 rescue
   puts "Create a servers.yaml file in current direcory"
