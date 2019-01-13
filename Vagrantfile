@@ -17,7 +17,7 @@ facts[:linux] = 'bento/centos-7.5'
 facts[:win] = 'jacqinthebox/windowsserver2016'
 
 
-required_plugins = %w( landrush vagrant-cachier )
+required_plugins = %w( vagrant-cachier )
 required_plugins.each do |plugin|
   system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
 end
@@ -39,9 +39,16 @@ rescue
   puts "Create a servers.yaml file in current direcory"
   message = <<-EOF
   ---
-  - name: coreos-01
-    box: coreos-alpha
-    ip: 192.168.10.2
+  :domain: gaurav.com
+  :network: 192.168.10.0/24
+  :os: linux
+  :cpus: 2
+  :memory: 2048
+  :vms:
+    - :name: master
+      :ip: 192.168.10.2
+    - :name: client1
+      :ip: 192.168.10.3
   EOF
   puts message
   exit 1
@@ -63,7 +70,7 @@ vms.each_with_index do |x, i|
   linux    = x[:linux]
   fqdn     = [name, domain].join('.')
 
-  if os == "win"
+  if role && os == "win"
     role << "windows"
   end
 
@@ -100,6 +107,7 @@ vms.each_with_index do |x, i|
         nm.vm.communicator = :winrm
         nm.vm.box = win
         nm.vm.hostname = name
+        nm.dns.tld = domain
         # Port forward WinRM and RDP
         nm.vm.network :private_network, ip: ip
         nm.vm.network :forwarded_port, guest: 22,   host: 2222,  id: "ssh", auto_correct: true
@@ -108,13 +116,18 @@ vms.each_with_index do |x, i|
         else
           nm.vm.box = linux
           nm.vm.network :private_network, ip: ip
-          nm.vm.hostname = fqdn
+          nm.vm.hostname = name
+          nm.dns.tld = domain
         end
         nm.vm.provider :virtualbox do |vb|
           vb.gui = false
           vb.linked_clone = true
           vb.memory = memory
           vb.cpus = cpus
+          vb.customize [
+            "modifyvm", :id,
+            "--natdnshostresolver1", "on",
+          ]
         end
         if role
           config.vm.provision :ansible do |a|
