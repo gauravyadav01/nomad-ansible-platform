@@ -6,14 +6,14 @@ require 'yaml'
 VAGRANTFILE_API_VERSION = 2
 
 # mutable by ARGV and settings file
-file    = 'servers.yaml'
+file    = 'servers.yml'
 facts = {}
 facts[:domain]  = 'example.com'
 facts[:box] = 'centos/7'
 facts[:network] = '192.168.2.0/24'
 facts[:memory] = 1024
 facts[:cpus] = 1
-facts[:linux] = 'bento/centos-7.5'
+facts[:linux] = 'bento/centos-7.6'
 facts[:win] = 'jacqinthebox/windowsserver2016'
 
 
@@ -36,7 +36,7 @@ begin
     v.merge!(facts.tap{ |x| x.delete(:vms)}){ |key, v1, v2| v1 }
   end
 rescue
-  puts "Create a servers.yaml file in current direcory"
+  puts "Create a servers.yml file in current direcory"
   message = <<-EOF
   ---
   :domain: gaurav.com
@@ -54,8 +54,10 @@ rescue
   exit 1
 end
 
+
 roles = Hash.new { |h, k| h[k] = Array.new }
 INVENTORY_PATH = "./environments/vagrant/hosts"
+
 
 vms.each_with_index do |x, i|
   name     = x[:name]
@@ -113,6 +115,7 @@ vms.each_with_index do |x, i|
         nm.vm.network :forwarded_port, guest: 22,   host: 2222,  id: "ssh", auto_correct: true
         nm.vm.network :forwarded_port, guest: 3389, host: 33389, id: "rdp", auto_correct: true
         nm.vm.network :forwarded_port, guest: 5985, host: 55985, id: "winrm", auto_correct: true
+        #nm.vm.provision "shell", privileged: "true", powershell_elevated_interactive: "true", path: "ConfigureRemotingForAnsible.ps1"
         else
           nm.vm.box = linux
           nm.vm.network :private_network, ip: ip
@@ -130,11 +133,13 @@ vms.each_with_index do |x, i|
           ]
         end
         if role
-          config.vm.provision :ansible do |a|
-            a.playbook = 'playbook/main.yaml'
-            a.inventory_path = INVENTORY_PATH
-#            a.galaxy_role_file = 'requirements.yaml'
-            a.limit = "#{fqdn}"
+          role.each do |r|
+            config.vm.provision :ansible do |a|
+              a.playbook = "playbook/main.yaml"
+              a.inventory_path = INVENTORY_PATH
+              #a.galaxy_role_file = 'requirements.yaml'
+              a.limit = "#{fqdn}"
+            end
           end
         end
       end

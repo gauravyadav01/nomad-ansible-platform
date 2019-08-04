@@ -2,9 +2,12 @@
   :domain: example.com
   :network: 192.168.10.0/24
   :os: linux
+  :cpus: 2
+  :memory: 2048
   :vms:
-    - :name: consul1
+    - :name: nomad-master
       :ip: 192.168.10.2
+      :os: linux
       :role:
-        - consul-master
         - nomad-master
+        - consul-master
