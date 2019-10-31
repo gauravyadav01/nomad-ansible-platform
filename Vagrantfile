@@ -13,7 +13,7 @@ facts[:box] = 'centos/7'
 facts[:network] = '192.168.2.0/24'
 facts[:memory] = 1024
 facts[:cpus] = 1
-facts[:linux] = 'bento/centos-7.6'
+facts[:linux] = 'centos/7'
 facts[:win] = 'jacqinthebox/windowsserver2016'
 
 
@@ -135,7 +135,7 @@ vms.each_with_index do |x, i|
         if role
           role.each do |r|
             config.vm.provision :ansible do |a|
-              a.playbook = "playbook/main.yaml"
+              a.playbook = "playbook/#{r}.yaml"
               a.inventory_path = INVENTORY_PATH
               #a.galaxy_role_file = 'requirements.yaml'
               a.limit = "#{fqdn}"
