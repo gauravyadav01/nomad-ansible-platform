@@ -3,11 +3,11 @@
   :network: 192.168.10.0/24
   :os: linux
   :cpus: 2
-  :memory: 2048
+  :memory: 4096
   :vms:
-    - :name: nomad-master
+    - :name: master
       :ip: 192.168.10.2
       :os: linux
-      :role:
-        - nomad-master
-        - consul-master
+    - :name: windows
+      :ip: 192.168.10.3
+      :os: win
